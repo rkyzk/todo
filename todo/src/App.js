@@ -1,8 +1,8 @@
-import "./App.css";
+import styles from "./App.module.css";
 import React, { useState, useEffect } from "react";
 
 function App() {
-  const currentDate = new Date().getFullYear();
+  // 入力されたtodo項目を格納する
   const [todo, setTodo] = useState({
     id: 0,
     title: "",
@@ -10,81 +10,123 @@ function App() {
     status: "",
     priority: "",
     deadline: "",
-    createdOn: currentDate,
+    createdOn: "",
   });
-  const [todoList, setTodoList] = useState([]);
 
-  // 入力された追加項目を変数に格納
+  /**
+   * localStorageに保存されているtodoリストを初期値としてtodoListに設定
+
+  const [todoList, setTodoList] = useState(() => {
+    const savedTodoList = localStorage.getItem("todoList");
+    if (savedTodoList) {
+      return JSON.parse(savedTodoList);
+    } else {
+      return [];
+    }
+  });
+
+  */
+
+  const [todoList, setTodoList] = useState([
+    {
+      id: 1,
+      title: "title",
+      details: "details",
+      status: "uhi",
+      priority: "aha",
+      deadline: "2024-01-31",
+      createdOn: "2023-12-31",
+    },
+  ]);
+
+  /**
+   * date objectを"yyyy-mm-dd"のstringフォーマットに変換
+   */
+  const getDate = (dateObj) => {
+    let day = dateObj.getDate();
+    let month = dateObj.getMonth() + 1;
+    let year = dateObj.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
+
+  // 今日の日付を取得（記載日として利用）
+  let currDate = getDate(new Date());
+
+  /*
+   * 入力された追加項目を変数に格納
+   */
   const handleChange = (e) => {
     setTodo({
       ...todo,
+      id: todoList.length + 1,
       [e.target.name]: e.target.value,
+      createdOn: currDate,
     });
   };
 
+  /*
+   * 入力された追加項目を変数に格納
+   */
   const handleAddItem = (e) => {
     e.preventDefault();
     if (todo !== "") {
-      setTodoList([
-        ...todoList,
-        {
-          id: todoList.length + 1,
-          title: todoList.title,
-          details: todoList.details,
-          status: todoList.status,
-          deadline: todoList.deadline,
-        },
-      ]);
+      setTodoList([...todoList, { ...todo }]);
     }
   };
 
   const handleEdit = (item) => {};
   const handleDelete = (item) => {};
 
+  const useEffect = (() => {}, [todoList]);
+
   const list = todoList.map((item) => {
     return (
-      <tr>
-        <th>{todoList.indexOf(item)}</th>
-        <th>{item.title}</th>
-        <th>{item.details}</th>
-        <th>{item.status}</th>
-        <th>{item.importance}</th>
-        <th>{item.deadline}</th>
-        <th>{item.createdOn}</th>
-        <th>
-          <button onClick={() => handleEdit(item)}>更新</button>
-        </th>
-        <th>
-          <button onClick={() => handleDelete(item)}>削除</button>
-        </th>
-      </tr>
+      <tbody>
+        <tr>
+          <td className={styles.idxWidth}>{todoList.indexOf(item)}</td>
+          <td className={styles.Fitwidth}>{item.title}</td>
+          <td>{item.details}</td>
+          <td className={styles.Fitwidth}>{item.status}</td>
+          <td className={styles.Fitwidth}>{item.priority}</td>
+          <td className={styles.Fitwidth}>{item.deadline.slice(0, 10)}</td>
+          <td className={styles.Fitwidth}>{item.createdOn}</td>
+          <td className={styles.Fitwidth}>
+            <button onClick={() => handleEdit(item)}>更新</button>
+          </td>
+          <td className={styles.Fitwidth}>
+            <button onClick={() => handleDelete(item)}>削除</button>
+          </td>
+        </tr>
+      </tbody>
     );
   });
 
   return (
-    <div className="App">
+    <div className={styles.App}>
       <h1>To Doリスト</h1>
       {todoList.length ? (
-        <table className="TodoTable">
-          <tr>
-            <th>No.</th>
-            <th>タイトル</th>
-            <th>詳細</th>
-            <th>ステータス</th>
-            <th>重要度</th>
-            <th>期日</th>
-            <th>記入日</th>
-            <th></th>
-            <th></th>
-          </tr>
+        <table className={styles.TodoTable}>
+          <thead style={{ backgroundColor: "lightblue" }}>
+            <tr>
+              <th className={styles.idxWidth}>No</th>
+              <th className={styles.Fitwidth}>タイトル</th>
+              <th>詳細</th>
+              <th className={styles.Fitwidth}>ステータス</th>
+              <th className={styles.Fitwidth}>重要度</th>
+              <th className={styles.Fitwidth}>期日</th>
+              <th className={styles.Fitwidth}>記入日</th>
+              <th className={styles.Fitwidth}></th>
+              <th className={styles.Fitwidth}></th>
+            </tr>
+          </thead>
           {list}
         </table>
       ) : (
-        <span style={{ fontSize: "24px" }}>To Doなし!</span>
+        <span style={{ fontSize: "20px" }}>To Doなし!</span>
       )}
-      <form class="NewItem" onSubmit={handleAddItem}>
-        <span style={{ fontSize: "1.2rem", fontWeight: "500" }}>追加項目</span>
-        <label forHtml="title" style={{ marginLeft: "20px" }}>
+      <h2 style={{ marginTop: "40px" }}>追加項目</h2>
+      <form className={styles.NewItem} onSubmit={handleAddItem}>
+        <label forhtml="title">
           <span>タイトル</span>
           <input
             name="title"
@@ -93,7 +135,7 @@ function App() {
             onChange={handleChange}
           />
         </label>
-        <label forHtml="details">
+        <label forhtml="details">
           <span>詳細</span>
           <textarea
             name="details"
@@ -101,30 +143,31 @@ function App() {
             value={todo.details}
             onChange={handleChange}
             rows="4"
-            cols="35"
+            cols="25"
           ></textarea>
         </label>
-        <label forHtml="status">
+        <label forhtml="status">
           <span>ステータス</span>
-          <select name="status" id="status">
-            <option value="">ーー</option>
-            <option value="not-started">未着手</option>
-            <option value="wip">進行中</option>
-            <option value="complete">完了</option>
+          <select name="status" id="status" onChange={handleChange}>
+            <option value="未着手" defaultValue>
+              未着手
+            </option>
+            <option value="進行中">進行中</option>
+            <option value="完了">完了</option>
           </select>
         </label>
-        <label forHtml="priority">
+        <label forhtml="priority">
           <span>重要度</span>
-          <select name="priority" id="priority">
-            <option value="urgent">最優先</option>
-            <option value="importnat">高</option>
-            <option value="normal" selected>
+          <select name="priority" id="priority" onChange={handleChange}>
+            <option value="最優先">最優先</option>
+            <option value="高">高</option>
+            <option value="普通" defaultValue>
               普通
             </option>
-            <option value="low">低</option>
+            <option value="低">低</option>
           </select>
         </label>
-        <label forHtml="deadline">
+        <label forhtml="deadline">
           <span>期日</span>
           <input
             type="datetime-local"
