@@ -39,6 +39,8 @@ function App() {
     },
   ]);
 
+  const [titleValid, setTitleValid] = useState(false);
+
   /**
    * date objectを"yyyy-mm-dd"のstringフォーマットに変換
    */
@@ -69,21 +71,43 @@ function App() {
    */
   const handleAddItem = (e) => {
     e.preventDefault();
-    if (todo !== "") {
+    if (todo.title.trim() !== "") {
+      setTitleValid(false);
       setTodoList([...todoList, { ...todo }]);
+    } else {
+      // タイトルが空の場合バリデーションを表示
+      setTitleValid(true);
     }
   };
 
   const handleEdit = (item) => {};
-  const handleDelete = (item) => {};
 
-  const useEffect = (() => {}, [todoList]);
+  /**
+   * 「削除」がクリックされた際、項目をtodoListより削除する。
+   */
+  const handleDelete = (item) => {
+    setTodoList(
+      /**
+       * 該当idの項目をtodoListよりフィルターで削除する。
+       * mapメソッドでidが削除項目以上の項目のidを１減らす。
+       */
+      todoList
+        .filter((elem) => elem.id !== item.id)
+        .map((filteredElem) => {
+          if (filteredElem.id > item.id) {
+            return { ...filteredElem, id: filteredElem.id - 1 };
+          } else {
+            return { ...filteredElem };
+          }
+        })
+    );
+  };
 
   const list = todoList.map((item) => {
     return (
-      <tbody>
+      <tbody key={item.id}>
         <tr>
-          <td className={styles.idxWidth}>{todoList.indexOf(item)}</td>
+          <td className={styles.idxWidth}>{item.id}</td>
           <td className={styles.Fitwidth}>{item.title}</td>
           <td>{item.details}</td>
           <td className={styles.Fitwidth}>{item.status}</td>
@@ -101,6 +125,22 @@ function App() {
     );
   });
 
+  /**
+   *
+   */
+  useEffect(() => {
+    console.log("fired");
+    setTodo({
+      id: 0,
+      title: "",
+      details: "",
+      status: "",
+      priority: "",
+      deadline: "",
+      createdOn: "",
+    });
+  }, [todoList]);
+  console.log(todo);
   return (
     <div className={styles.App}>
       <h1>To Doリスト</h1>
@@ -110,7 +150,7 @@ function App() {
             <tr>
               <th className={styles.idxWidth}>No</th>
               <th className={styles.Fitwidth}>タイトル</th>
-              <th>詳細</th>
+              <th className={styles.Fitwidth}>詳細</th>
               <th className={styles.Fitwidth}>ステータス</th>
               <th className={styles.Fitwidth}>重要度</th>
               <th className={styles.Fitwidth}>期日</th>
@@ -133,7 +173,13 @@ function App() {
             type="text"
             value={todo.title}
             onChange={handleChange}
+            required
           />
+          {titleValid && (
+            <span className={styles.Validation}>
+              タイトルを記載してください。
+            </span>
+          )}
         </label>
         <label forhtml="details">
           <span>詳細</span>
