@@ -7,8 +7,8 @@ function App() {
     id: 0,
     title: "",
     details: "",
-    status: "",
-    priority: "",
+    status: "未着手",
+    priority: "普通",
     deadline: "",
     createdOn: "",
   });
@@ -24,11 +24,11 @@ function App() {
     createdOn: "",
   });
 
-  /** 項目追加の際タイトルにスペースのみ入力されている場合
+  /** 項目追加フォームのタイトルにスペースのみ入力されている場合
       trueに設定（バリデーション表示のため）*/
   const [titleValid, setTitleValid] = useState(false);
 
-  /** タイトルにスペースのみ入力されている場合
+  /** 更新フォームのタイトルにスペースのみ入力されている場合
       trueに設定（バリデーション表示のため）*/
   const [editTitleValid, setEditTitleValid] = useState(false);
 
@@ -74,8 +74,23 @@ function App() {
   // 今日の日付を取得（記載日として利用）
   let currDate = getDate(new Date());
 
+  /**
+   * 追加フォームをクリアする
+   */
+  const clearAddTodoForm = () => {
+    setTodo({
+      id: 0,
+      title: "",
+      details: "",
+      status: "未着手",
+      priority: "普通",
+      deadline: "",
+      createdOn: "",
+    });
+  };
+
   /*
-   * 入力された追加項目を変数に格納
+   * 入力された追加項目を変数todoに格納
    */
   const handleChange = (e) => {
     setTodo({
@@ -87,7 +102,7 @@ function App() {
   };
 
   /*
-   * 追加ボタン押下時にtodoの値をtodoList追加
+   * 追加ボタン押下時にtodoの値をtodoListに追加
    */
   const handleAddItem = (e) => {
     e.preventDefault();
@@ -95,16 +110,8 @@ function App() {
       // タイトルのバリデーションを非表示にする
       setTitleValid(false);
       setTodoList([...todoList, { ...todo }]);
-      // todoを空にする（追加項目フォームをクリアする）
-      setTodo({
-        id: 0,
-        title: "",
-        details: "",
-        status: "",
-        priority: "",
-        deadline: "",
-        createdOn: "",
-      });
+      // 追加項目フォームをクリアする
+      clearAddTodoForm();
     } else {
       // タイトルが空の場合バリデーションを表示
       setTitleValid(true);
@@ -384,7 +391,12 @@ function App() {
         </label>
         <label forhtml="status">
           <span>ステータス</span>
-          <select name="status" id="status" onChange={handleChange}>
+          <select
+            name="status"
+            id="status"
+            onChange={handleChange}
+            value={todo.status}
+          >
             <option value="未着手" defaultValue>
               未着手
             </option>
@@ -394,7 +406,12 @@ function App() {
         </label>
         <label forhtml="priority">
           <span>重要度</span>
-          <select name="priority" id="priority" onChange={handleChange}>
+          <select
+            name="priority"
+            id="priority"
+            onChange={handleChange}
+            value={todo.priority}
+          >
             <option value="最優先">最優先</option>
             <option value="高">高</option>
             <option value="普通" defaultValue>
@@ -420,6 +437,14 @@ function App() {
           disabled={isEditing ? true : false}
         >
           追加
+        </button>
+        <button
+          type="button"
+          style={{ marginTop: "24px" }}
+          onClick={clearAddTodoForm}
+          disabled={isEditing ? true : false}
+        >
+          クリア
         </button>
       </form>
     </div>
