@@ -13,6 +13,28 @@ function App() {
     createdOn: "",
   });
 
+  // 入力されたtodoEdit項目を格納する
+  const [todoEdit, setTodoEdit] = useState({
+    id: 0,
+    title: "",
+    details: "",
+    status: "",
+    priority: "",
+    deadline: "",
+    createdOn: "",
+  });
+
+  /** 項目追加の際タイトルにスペースのみ入力されている場合
+      trueに設定（バリデーション表示のため）*/
+  const [titleValid, setTitleValid] = useState(false);
+
+  /** タイトルにスペースのみ入力されている場合
+      trueに設定（バリデーション表示のため）*/
+  const [editTitleValid, setEditTitleValid] = useState(false);
+
+  // 更新中はtrueに設定
+  const [isEditing, setIsEditing] = useState(false);
+
   /**
    * localStorageに保存されているtodoリストを初期値としてtodoListに設定
 
@@ -32,14 +54,12 @@ function App() {
       id: 1,
       title: "title",
       details: "details",
-      status: "uhi",
-      priority: "aha",
+      status: "未着手",
+      priority: "最優先",
       deadline: "2024-01-31",
       createdOn: "2023-12-31",
     },
   ]);
-
-  const [titleValid, setTitleValid] = useState(false);
 
   /**
    * date objectを"yyyy-mm-dd"のstringフォーマットに変換
@@ -67,20 +87,82 @@ function App() {
   };
 
   /*
-   * 入力された追加項目を変数に格納
+   * 追加ボタン押下時にtodoの値をtodoList追加
    */
   const handleAddItem = (e) => {
     e.preventDefault();
     if (todo.title.trim() !== "") {
+      // タイトルのバリデーションを非表示にする
       setTitleValid(false);
       setTodoList([...todoList, { ...todo }]);
+      // todoを空にする（追加項目フォームをクリアする）
+      setTodo({
+        id: 0,
+        title: "",
+        details: "",
+        status: "",
+        priority: "",
+        deadline: "",
+        createdOn: "",
+      });
     } else {
       // タイトルが空の場合バリデーションを表示
       setTitleValid(true);
     }
   };
 
-  const handleEdit = (item) => {};
+  /**
+   * 更新フォームに入力された値を変数todoEditに格納
+   */
+  const handleChangeEditForm = (e) => {
+    setTodoEdit({
+      ...todoEdit,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  /**
+   * 保存押下時にtodoListの該当todoオブジェクトを更新
+   */
+  const handleSaveEdit = (e) => {
+    e.preventDefault();
+    if (todoEdit.title.trim() !== "") {
+      // タイトルのバリデーションを非表示にする
+      setEditTitleValid(false);
+      setTodoList(
+        todoList.map((obj) => {
+          if (obj.id === todoEdit.id) {
+            return { ...todoEdit };
+          } else {
+            return { ...obj };
+          }
+        })
+      );
+      setIsEditing(false);
+    } else {
+      // タイトルが空の場合バリデーションを表示
+      setEditTitleValid(true);
+    }
+  };
+
+  /**
+   * 更新フォームを表示
+   * @param {} item
+   */
+  const showEditForm = (item) => {
+    setIsEditing(true);
+    //　更新項目の値を画面より取得し変数todoに格納
+    const { id, title, details, status, priority, deadline, createdOn } = item;
+    setTodoEdit({
+      id,
+      title,
+      details,
+      status,
+      priority,
+      deadline,
+      createdOn,
+    });
+  };
 
   /**
    * 「削除」がクリックされた際、項目をtodoListより削除する。
@@ -103,25 +185,131 @@ function App() {
     );
   };
 
+  // todoテーブルを期日が近い順に並べ替える
+  const handleSort = (e) => {
+    if (e.target.textContent !== "x") {
+      setTodoList([
+        ...todoList.sort((a, b) => {
+          return Date.parse(a.deadline) - Date.parse(b.deadline);
+        }),
+      ]);
+      let btn = e.target;
+      btn.textContent = "x";
+    } else {
+      // todoテーブルをインデックス順に並べる
+      setTodoList([
+        ...todoList.sort((a, b) => {
+          return a.id - b.id;
+        }),
+      ]);
+      let btn = e.target;
+      btn.textContent = "↑";
+    }
+  };
+
+  // todoのテーブルコンポーネント
   const list = todoList.map((item) => {
     return (
-      <tbody key={item.id}>
-        <tr>
-          <td className={styles.idxWidth}>{item.id}</td>
-          <td className={styles.Fitwidth}>{item.title}</td>
-          <td>{item.details}</td>
-          <td className={styles.Fitwidth}>{item.status}</td>
-          <td className={styles.Fitwidth}>{item.priority}</td>
-          <td className={styles.Fitwidth}>{item.deadline.slice(0, 10)}</td>
-          <td className={styles.Fitwidth}>{item.createdOn}</td>
-          <td className={styles.Fitwidth}>
-            <button onClick={() => handleEdit(item)}>更新</button>
-          </td>
-          <td className={styles.Fitwidth}>
-            <button onClick={() => handleDelete(item)}>削除</button>
-          </td>
-        </tr>
-      </tbody>
+      <>
+        {/** 更新中の項目 */}
+        {isEditing && item.id === todoEdit.id ? (
+          <tbody key={item.id}>
+            <tr>
+              <td className={styles.Idx}>{item.id}</td>
+              <td colSpan="8">
+                <form
+                  onSubmit={handleSaveEdit}
+                  className={styles.EditForm}
+                  id="editForm"
+                >
+                  <div style={{ width: "155px" }}>
+                    <input
+                      name="title"
+                      type="text"
+                      value={todoEdit.title}
+                      onChange={handleChangeEditForm}
+                      style={{ width: "147px" }}
+                      required
+                    />
+                    {editTitleValid && (
+                      <span className={styles.Validation}>
+                        タイトルを記載してください。
+                      </span>
+                    )}
+                  </div>
+                  <textarea
+                    name="details"
+                    type="text"
+                    value={todoEdit.details}
+                    onChange={handleChangeEditForm}
+                    rows="4"
+                    style={{ width: "247px" }}
+                  ></textarea>
+                  <select
+                    name="status"
+                    id="status"
+                    onChange={handleChangeEditForm}
+                    style={{ width: "98px" }}
+                    value={todoEdit.status}
+                  >
+                    <option value="未着手">未着手</option>
+                    <option value="進行中">進行中</option>
+                    <option value="完了">完了</option>
+                  </select>
+                  <select
+                    name="priority"
+                    id="priority"
+                    onChange={handleChangeEditForm}
+                    style={{ width: "88px" }}
+                    value={todoEdit.priority}
+                  >
+                    <option value="最優先">最優先</option>
+                    <option value="高">高</option>
+                    <option value="普通">普通</option>
+                    <option value="低">低</option>
+                  </select>
+                  <input
+                    type="datetime-local"
+                    name="deadline"
+                    onChange={handleChangeEditForm}
+                    style={{ width: "110px" }}
+                    value={todoEdit.deadline}
+                  />
+                  <button type="submit" style={{ marginLeft: "10px" }}>
+                    保存
+                  </button>
+                  <button
+                    type="button"
+                    style={{ marginLeft: "3px" }}
+                    onClick={() => setIsEditing(false)}
+                  >
+                    キャンセル
+                  </button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        ) : (
+          <tbody key={item.id}>
+            {/** 更新中でない項目 */}
+            <tr>
+              <td className={styles.Idx}>{item.id}</td>
+              <td className={styles.Title}>{item.title}</td>
+              <td className={styles.Details}>{item.details}</td>
+              <td className={styles.Status}>{item.status}</td>
+              <td className={styles.Priority}>{item.priority}</td>
+              <td className={styles.Deadline}>{item.deadline.slice(0, 10)}</td>
+              <td className={styles.CreatedOn}>{item.createdOn}</td>
+              <td className={styles.BtnCell}>
+                <button onClick={() => showEditForm(item)}>更新</button>
+              </td>
+              <td className={styles.BtnCell}>
+                <button onClick={() => handleDelete(item)}>削除</button>
+              </td>
+            </tr>
+          </tbody>
+        )}
+      </>
     );
   });
 
@@ -130,17 +318,9 @@ function App() {
    */
   useEffect(() => {
     console.log("fired");
-    setTodo({
-      id: 0,
-      title: "",
-      details: "",
-      status: "",
-      priority: "",
-      deadline: "",
-      createdOn: "",
-    });
+    localStorage.setItem("todoList", JSON.stringify(todoList));
   }, [todoList]);
-  console.log(todo);
+
   return (
     <div className={styles.App}>
       <h1>To Doリスト</h1>
@@ -148,15 +328,24 @@ function App() {
         <table className={styles.TodoTable}>
           <thead style={{ backgroundColor: "lightblue" }}>
             <tr>
-              <th className={styles.idxWidth}>No</th>
-              <th className={styles.Fitwidth}>タイトル</th>
-              <th className={styles.Fitwidth}>詳細</th>
-              <th className={styles.Fitwidth}>ステータス</th>
-              <th className={styles.Fitwidth}>重要度</th>
-              <th className={styles.Fitwidth}>期日</th>
-              <th className={styles.Fitwidth}>記入日</th>
-              <th className={styles.Fitwidth}></th>
-              <th className={styles.Fitwidth}></th>
+              <th className={styles.Idx}>No</th>
+              <th className={styles.Title}>タイトル</th>
+              <th className={styles.Details}>詳細</th>
+              <th className={styles.Status}>ステータス</th>
+              <th className={styles.Priority}>重要度</th>
+              <th className={styles.Deadline}>
+                期日
+                <button
+                  className={styles.Caret}
+                  onClick={handleSort}
+                  value="off"
+                >
+                  ↑
+                </button>
+              </th>
+              <th className={styles.CreatedOn}>記入日</th>
+              <th className={styles.BtnCell}></th>
+              <th className={styles.BtnCell}></th>
             </tr>
           </thead>
           {list}
@@ -173,6 +362,7 @@ function App() {
             type="text"
             value={todo.title}
             onChange={handleChange}
+            style={{ width: "180px" }}
             required
           />
           {titleValid && (
@@ -189,7 +379,7 @@ function App() {
             value={todo.details}
             onChange={handleChange}
             rows="4"
-            cols="25"
+            cols="28"
           ></textarea>
         </label>
         <label forhtml="status">
@@ -218,10 +408,17 @@ function App() {
           <input
             type="datetime-local"
             name="deadline"
+            style={{ width: "160px" }}
             onChange={handleChange}
+            value={todo.deadline}
           />
         </label>
-        <button type="submit" style={{ marginTop: "24px" }}>
+        <button
+          id="addBtn"
+          type="submit"
+          style={{ marginTop: "24px" }}
+          disabled={isEditing ? true : false}
+        >
           追加
         </button>
       </form>

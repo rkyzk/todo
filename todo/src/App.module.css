@@ -5,25 +5,59 @@
 
 button {
   height: 30px;
-  background-color: beige;
+  outline: none;
+  box-shadow: none;
+  border-radius: 5px;
 }
 
+/** -----------------------------
+ *    テーブル
+    -----------------------------*/
 .TodoTable,
 th,
 td {
-  width: 100%;
   border: 1px gray solid;
   border-collapse: collapse;
 }
 
-.Fitwidth {
-  padding: 2px 3px;
-  white-space: nowrap;
+.Idx {
+  width: 30px;
+  text-align: center;
 }
 
-.idxWidth {
-  width: 40px;
+.Title {
+  width: 150px;
+  padding: 2px 3px;
+}
+
+.Details {
+  width: 250px;
+}
+
+.Status {
+  width: 95px;
   text-align: center;
+}
+
+.Priority {
+  width: 85px;
+  text-align: center;
+}
+
+.Caret {
+  width: 15px;
+  height: 18px;
+  font-size: 1rem;
+  font-weight: 800;
+  background-color: lightblue;
+  outline: none;
+  border: none;
+  box-shadow: none;
+  margin-top: -10px;
+}
+
+.BtnCell {
+  width: 43px;
 }
 
 .NewItem {
@@ -38,10 +72,11 @@ td {
 }
 
 .NewItem > label {
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
-.NewItem > label > input {
+.NewItem > label > input,
+.NewItem > label > textarea {
   margin-top: 5px;
   line-height: 1.5rem;
 }
@@ -52,6 +87,11 @@ td {
   width: 70px;
 }
 
+.EditForm {
+  display: flex;
+  align-items: start;
+}
+
 h2 {
   display: block;
 }
@@ -59,4 +99,5 @@ h2 {
 .Validation {
   color: red;
   margin-top: 3px;
+  display: block;
 }
