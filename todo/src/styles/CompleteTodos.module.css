@@ -1,0 +1,15 @@
+.CompleteTodos > tbody > tr > td {
+  background-color: lightgray;
+  border: none;
+}
+
+.CompleteTodos > thead {
+  border: none;
+  background-color: rgb(112, 109, 109);
+  color: #fff;
+}
+
+.CompleteTodos {
+  width: 900px;
+  margin: 0 auto;
+}

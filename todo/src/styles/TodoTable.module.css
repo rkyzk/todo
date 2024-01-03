@@ -1,0 +1,101 @@
+.TodoTable {
+  width: 900px;
+  margin: 20px auto;
+  border-radius: 5px;
+}
+
+.EditForm {
+  display: flex;
+  align-items: start;
+}
+
+h2 {
+  text-align: center;
+  margin-top: 30px;
+  font-weight: 400;
+}
+
+.TodoTable thead {
+  background-color: rgb(192, 226, 248);
+}
+
+.TodoTable td {
+  background-color: rgb(220, 236, 247);
+}
+
+.TodoTable,
+th,
+td {
+  border: 1px solid #fff;
+  border-collapse: collapse;
+}
+
+.Title {
+  width: 150px;
+  padding: 2px 3px;
+}
+
+.Details {
+  width: 250px;
+  padding: 2px 3px;
+}
+
+.Status {
+  width: 95px;
+  text-align: center;
+}
+
+.Priority {
+  width: 85px;
+  text-align: center;
+}
+
+.Deadline,
+.CreatedOn {
+  width: 92px;
+}
+
+.Arrow {
+  width: 5px;
+  height: 18px;
+  font-size: 1rem;
+  font-weight: 800;
+  background-color: rgb(192, 226, 248);
+  outline: none;
+  border: none;
+  box-shadow: none;
+  margin-top: -10px;
+}
+
+.BtnCell {
+  width: 46px;
+}
+
+textarea {
+  font-size: 1rem;
+}
+
+input {
+  font-size: 1rem;
+  height: 30px;
+}
+
+select {
+  font-size: 1rem;
+  text-align: center;
+  height: 30px;
+}
+
+.NoTodo {
+  width: 200px;
+  height: 25px;
+  font-size: 20px;
+  display: block;
+  margin: 20px auto;
+}
+
+.Validation {
+  color: red;
+  margin-top: 3px;
+  display: block;
+}
