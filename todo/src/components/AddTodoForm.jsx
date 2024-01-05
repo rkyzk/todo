@@ -5,7 +5,7 @@ export const AddTodoForm = (props) => {
   const { todoList, setTodoList, isEditing } = props;
   // 入力されたtodo項目を格納する
   const [todo, setTodo] = useState({
-    id: 0,
+    id: "",
     title: "",
     details: "",
     status: "未着手",
@@ -43,7 +43,7 @@ export const AddTodoForm = (props) => {
    */
   const clearAddTodoForm = () => {
     setTodo({
-      id: 0,
+      id: "",
       title: "",
       details: "",
       status: "未着手",
@@ -59,7 +59,7 @@ export const AddTodoForm = (props) => {
   const handleChange = (e) => {
     setTodo({
       ...todo,
-      id: todoList.length + 1,
+      id: getKey(),
       [e.target.name]: e.target.value,
       createdOn: currDate,
     });
@@ -82,6 +82,18 @@ export const AddTodoForm = (props) => {
     }
   };
 
+  // Unique keyを生成
+  const getKey = () => {
+    let charsAndNums = "abcdefghijklmnopqrstuvwxyz0123456789";
+    let key = "";
+    for (let i = 0; i < 6; i++) {
+      key += charsAndNums.charAt(
+        Math.floor(Math.random() * charsAndNums.length)
+      );
+    }
+    return key;
+  };
+
   return (
     <form className={styles.NewItem} onSubmit={handleAddItem}>
       <label forhtml="title">
@@ -92,13 +104,11 @@ export const AddTodoForm = (props) => {
           value={todo.title}
           ref={inputRef}
           onChange={handleChange}
-          style={{ width: "180px" }}
+          style={{ width: "175px" }}
           required
         />
         {titleValid && (
-          <span className={styles.Validation}>
-            タイトルを記載してください。
-          </span>
+          <span className={styles.Validation}>タイトルは必須です。</span>
         )}
       </label>
       <label forhtml="details">
@@ -109,7 +119,7 @@ export const AddTodoForm = (props) => {
           value={todo.details}
           onChange={handleChange}
           rows="3"
-          style={{ width: "245px" }}
+          style={{ width: "240px" }}
         ></textarea>
       </label>
       <label forhtml="status">
@@ -147,7 +157,7 @@ export const AddTodoForm = (props) => {
         <input
           type="datetime-local"
           name="deadline"
-          style={{ width: "160px" }}
+          style={{ width: "183px" }}
           onChange={handleChange}
           value={todo.deadline}
         />

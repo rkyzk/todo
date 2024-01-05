@@ -4,29 +4,10 @@ import { TodoTable } from "./components/TodoTable";
 import { AddTodoForm } from "./components/AddTodoForm";
 import { CompleteTodos } from "./components/CompleteTodos";
 
+/** Todoアプリの画面全体を表示 */
 export const Todo = () => {
-  // 未完了todo項目を格納
-  const [todoList, setTodoList] = useState([
-    {
-      id: 1,
-      title: "title",
-      details: "details",
-      status: "未着手",
-      priority: "最優先",
-      deadline: "2024-01-31",
-      createdOn: "2023-12-31",
-    },
-  ]);
-
-  // 完了todo項目を格納
-  const [completeTodos, setCompleteTodos] = useState([]);
-
-  // 項目更新中はtrueに設定
-  const [isEditing, setIsEditing] = useState(false);
-
-  /**
-   * localStorageに保存されているtodoリストを初期値としてtodoListに設定
-
+  /**　localStorageに保存されているtodoリストを
+       初期値としてtodoListに設定 */
   const [todoList, setTodoList] = useState(() => {
     const savedTodoList = localStorage.getItem("todoList");
     if (savedTodoList) {
@@ -34,7 +15,13 @@ export const Todo = () => {
     } else {
       return [];
     }
-  }); */
+  });
+
+  // 完了todo項目を格納
+  const [completeTodos, setCompleteTodos] = useState([]);
+
+  // 項目更新中はtrueに設定
+  const [isEditing, setIsEditing] = useState(false);
 
   /**
    * todoList更新時にlocal storageのtodoListを更新
@@ -45,7 +32,7 @@ export const Todo = () => {
 
   return (
     <div className={styles.Todo}>
-      <h1>My To Do List</h1>
+      <h1>To Do List</h1>
       <AddTodoForm
         todoList={todoList}
         setTodoList={setTodoList}
@@ -59,12 +46,14 @@ export const Todo = () => {
         completeTodos={completeTodos}
         setCompleteTodos={setCompleteTodos}
       />
-      <CompleteTodos
-        todoList={todoList}
-        setTodoList={setTodoList}
-        completeTodos={completeTodos}
-        setCompleteTodos={setCompleteTodos}
-      />
+      {completeTodos.length > 0 && (
+        <CompleteTodos
+          todoList={todoList}
+          setTodoList={setTodoList}
+          completeTodos={completeTodos}
+          setCompleteTodos={setCompleteTodos}
+        />
+      )}
     </div>
   );
 };
