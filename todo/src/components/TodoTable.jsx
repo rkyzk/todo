@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styles from "../styles/TodoTable.module.css";
 
 export const TodoTable = (props) => {
-  // 各変数を取得
   const {
     todoList,
     setTodoList,
@@ -77,9 +76,7 @@ export const TodoTable = (props) => {
     /**  期日に記入があり、10文字（YYYY-MM-DDのフォーマット）である場合、
          T00:00 を追加（ないと日付が更新フォームに反映されない。）*/
     var date;
-    if (deadline.length === 10) {
-      date = deadline + "T00:00";
-    }
+    deadline.length === 10 && (date = deadline + "T00:00");
     //　todoEditに更新項目の値を格納
     setTodoEdit({
       id,

@@ -1,3 +1,15 @@
 # To Do アプリ
 
-select defaultValue not working
+## 画面要素
+
+1. Todo 追加フォーム
+2. 未完了 Todo テーブル（未完了 Todo がある場合のみ表示）
+3. 完了 Todo テーブル（完了 Todo がある場合のみ表示）
+
+## 機能
+
+- Todo 項目追加
+- Todo 編集
+- Todo 削除
+- Todo を未完了、完了テーブル間で移動する
+- 未完了 Todo テーブルの項目を期日が近い順に並べ替える

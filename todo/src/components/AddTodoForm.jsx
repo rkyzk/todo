@@ -166,7 +166,7 @@ export const AddTodoForm = (props) => {
         id="addBtn"
         type="submit"
         style={{ marginTop: "24px" }}
-        disabled={isEditing ? true : false}
+        disabled={isEditing}
       >
         追加
       </button>
@@ -174,7 +174,7 @@ export const AddTodoForm = (props) => {
         type="button"
         style={{ marginTop: "24px", marginLeft: "3px" }}
         onClick={clearAddTodoForm}
-        disabled={isEditing ? true : false}
+        disabled={isEditing}
       >
         クリア
       </button>
