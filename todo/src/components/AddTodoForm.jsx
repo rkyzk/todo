@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import styles from "../styles/AddTodoForm.module.css";
 
-export const AddTodoForm = (props) => {
-  const { todoList, setTodoList, isEditing } = props;
+export const AddTodoForm = ({ todoList, setTodoList, isEditing }) => {
   // 入力されたtodo項目を格納する
   const [todo, setTodo] = useState({
     id: "",
@@ -11,7 +10,7 @@ export const AddTodoForm = (props) => {
     status: "未着手",
     priority: "普通",
     deadline: "",
-    createdOn: "",
+    createdAt: "",
   });
 
   /** 追加フォームのタイトル入力欄にrefを設定 */
@@ -29,14 +28,11 @@ export const AddTodoForm = (props) => {
    * date objectを"yyyy-mm-dd"のstringフォーマットに変換
    */
   const getDate = (dateObj) => {
-    let day = dateObj.getDate();
-    let month = dateObj.getMonth() + 1;
-    let year = dateObj.getFullYear();
+    const day = dateObj.getDate();
+    const month = dateObj.getMonth() + 1;
+    const year = dateObj.getFullYear();
     return `${year}-${month}-${day}`;
   };
-
-  // 今日の日付を取得（記載日として利用）
-  let currDate = getDate(new Date());
 
   /**
    * 追加フォームをクリアする
@@ -49,7 +45,7 @@ export const AddTodoForm = (props) => {
       status: "未着手",
       priority: "普通",
       deadline: "",
-      createdOn: "",
+      createdAt: "",
     });
   };
 
@@ -57,11 +53,13 @@ export const AddTodoForm = (props) => {
    * 入力された追加項目を変数todoに格納
    */
   const handleChange = (e) => {
+    // 今日の日付を取得（記載日として利用）
+    const currDate = getDate(new Date());
     setTodo({
       ...todo,
       id: getKey(),
       [e.target.name]: e.target.value,
-      createdOn: currDate,
+      createdAt: currDate,
     });
   };
 

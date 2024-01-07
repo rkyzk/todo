@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import styles from "../styles/TodoTable.module.css";
 
-export const TodoTable = (props) => {
-  const {
-    todoList,
-    setTodoList,
-    isEditing,
-    setIsEditing,
-    completeTodos,
-    setCompleteTodos,
-  } = props;
-
+export const TodoTable = ({
+  todoList,
+  setTodoList,
+  isEditing,
+  setIsEditing,
+  completeTodos,
+  setCompleteTodos,
+}) => {
   // 更新フォームに入力された内容を格納する
   const [todoEdit, setTodoEdit] = useState({
     id: "",
@@ -19,7 +17,7 @@ export const TodoTable = (props) => {
     status: "",
     priority: "",
     deadline: "",
-    createdOn: "",
+    createdAt: "",
   });
 
   /** 更新フォームのタイトルにスペースのみ入力されている場合
@@ -72,11 +70,10 @@ export const TodoTable = (props) => {
   const showEditForm = (item) => {
     setIsEditing(true);
     //　更新項目の値を変数に格納
-    const { id, title, details, status, priority, deadline, createdOn } = item;
+    const { id, title, details, status, priority, deadline, createdAt } = item;
     /**  期日に記入があり、10文字（YYYY-MM-DDのフォーマット）である場合、
          T00:00 を追加（ないと日付が更新フォームに反映されない。）*/
-    var date;
-    deadline.length === 10 && (date = deadline + "T00:00");
+    const correctDate = deadline.length === 10 ? deadline + "T00:00" : deadline;
     //　todoEditに更新項目の値を格納
     setTodoEdit({
       id,
@@ -84,8 +81,8 @@ export const TodoTable = (props) => {
       details,
       status,
       priority,
-      deadline: date || deadline,
-      createdOn,
+      deadline: correctDate,
+      createdAt,
     });
   };
 
@@ -93,11 +90,11 @@ export const TodoTable = (props) => {
    * todoテーブルを期日が近い順に並べ替える
    */
   const handleSort = () => {
-    let newList = [...todoList];
+    const newList = [...todoList];
     // 期日の記載がある項目でフィルター
-    let withDeadline = newList.filter((elem) => elem.deadline !== "");
+    const withDeadline = newList.filter((elem) => elem.deadline !== "");
     // 期日の記載がない項目でフィルター
-    let withoutDeadline = newList.filter((elem) => elem.deadline === "");
+    const withoutDeadline = newList.filter((elem) => elem.deadline === "");
     setTodoList([
       // 期日の記載がある項目を期日が近い順に並べる
       ...withDeadline.sort((a, b) => {
@@ -204,7 +201,7 @@ export const TodoTable = (props) => {
               <td style={{ textAlign: "center" }}>{item.status}</td>
               <td style={{ textAlign: "center" }}>{item.priority}</td>
               <td>{item.deadline.slice(0, 10)}</td>
-              <td>{item.createdOn}</td>
+              <td>{item.createdAt}</td>
               <td style={{ textAlign: "center" }}>
                 <button onClick={() => showEditForm(item)}>更新</button>
               </td>
@@ -234,7 +231,7 @@ export const TodoTable = (props) => {
                   ↑
                 </button>
               </th>
-              <th className={styles.CreatedOn}>記載日</th>
+              <th className={styles.CreateAt}>記載日</th>
               <th className={styles.BtnCell}></th>
               <th className={styles.BtnCell}></th>
             </tr>

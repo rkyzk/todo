@@ -2,9 +2,12 @@ import React from "react";
 import tblStyles from "../styles/TodoTable.module.css";
 import styles from "../styles/CompleteTodos.module.css";
 
-export const CompleteTodos = (props) => {
-  const { todoList, setTodoList, completeTodos, setCompleteTodos } = props;
-
+export const CompleteTodos = ({
+  todoList,
+  setTodoList,
+  completeTodos,
+  setCompleteTodos,
+}) => {
   // completeTodosより項目削除
   const deleteTodo = (idx) => {
     let newArr = [...completeTodos];
@@ -27,7 +30,7 @@ export const CompleteTodos = (props) => {
         <td style={{ textAlign: "center" }}>{item.status}</td>
         <td style={{ textAlign: "center" }}>{item.priority}</td>
         <td>{item.deadline.slice(0, 10)}</td>
-        <td>{item.createdOn}</td>
+        <td>{item.createdAt}</td>
         <td>
           <button onClick={() => putBackItem(item, idx)}>戻す</button>
         </td>
@@ -49,7 +52,7 @@ export const CompleteTodos = (props) => {
             <th className={tblStyles.Status}>ステータス</th>
             <th className={tblStyles.Priority}>重要度</th>
             <th className={tblStyles.Deadline}>期日</th>
-            <th className={tblStyles.CreatedOn}>記入日</th>
+            <th className={tblStyles.CreatedAt}>記入日</th>
             <th className={tblStyles.BtnCell}></th>
             <th className={tblStyles.BtnCell}></th>
           </tr>
